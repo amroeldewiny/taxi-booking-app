@@ -92,25 +92,62 @@
         }
       </div>
 
-      @if (journeyEstimate(); as estimate) {
+      @if (estimateLoading()) {
+        <section class="estimate-status">
+          <span class="spinner"></span>
+
+          <div>
+            <strong>Calculating your journey</strong>
+
+            <p>
+              Please wait while we estimate the distance
+              and travel time.
+            </p>
+          </div>
+        </section>
+
+      } @else if (estimateError()) {
+
+        <section class="estimate-status error">
+          <span>!</span>
+
+          <div>
+            <strong>Estimate unavailable</strong>
+
+            <p>{{ estimateError() }}</p>
+          </div>
+        </section>
+
+      } @else if (journeyEstimate(); as estimate) {
+
         <section class="journey-estimate">
           <div>
             <span>Estimated distance</span>
 
-            <strong>
-              {{ estimate.distanceKm }} km
-            </strong>
+            <strong>{{ estimate.distanceKm }} km</strong>
           </div>
 
           <div>
             <span>Estimated duration</span>
 
-            <strong>
-              {{ estimate.durationMinutes }} minutes
-            </strong>
+            <strong>{{ estimate.durationMinutes }} minutes</strong>
           </div>
         </section>
+
       }
+
+      <button
+        class="confirm-button"
+        type="button"
+        [disabled]="
+          !selectedVehicle() ||
+          estimateLoading() ||
+          !journeyEstimate()
+        "
+        (click)="continueToPassenger()"
+      >
+        Continue
+      </button>
 
       @if (priceCalculation(); as price) {
         <div class="price-breakdown">

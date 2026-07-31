@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { delay, Observable, of } from 'rxjs';
 
 import {
   JourneyEstimate,
@@ -11,7 +12,7 @@ export class LocationService {
   getJourneyEstimate(
     pickupLocation: string,
     destination: string,
-  ): JourneyEstimate {
+  ): Observable<JourneyEstimate> {
     const normalizedPickup =
       pickupLocation.trim().toLowerCase();
 
@@ -26,10 +27,15 @@ export class LocationService {
     const durationMinutes =
       this.calculateDuration(distanceKm);
 
-    return {
+    const estimate: JourneyEstimate = {
       distanceKm,
       durationMinutes,
     };
+
+    // Simulates an API request taking 700 milliseconds.
+    return of(estimate).pipe(
+      delay(700),
+    );
   }
 
   private calculateMockDistance(
@@ -56,11 +62,13 @@ export class LocationService {
     const routeKey =
       `${pickupLocation}-${destination}`;
 
-    return routes[routeKey] ??
+    return (
+      routes[routeKey] ??
       this.generateFallbackDistance(
         pickupLocation,
         destination,
-      );
+      )
+    );
   }
 
   private generateFallbackDistance(
@@ -87,10 +95,8 @@ export class LocationService {
     const drivingMinutes =
       (distanceKm / averageSpeedKmPerHour) * 60;
 
-    const trafficBufferMinutes = 5;
-
     return Math.ceil(
-      drivingMinutes + trafficBufferMinutes,
+      drivingMinutes + 5,
     );
   }
 }

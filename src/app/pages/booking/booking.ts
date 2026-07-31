@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  OnInit,
   signal,
 } from '@angular/core';
 import { Router } from '@angular/router';
@@ -13,6 +14,7 @@ import {
 import { BookingService } from '../../core/services/booking';
 import { PricingService } from '../../core/services/pricing';
 import { LocationService } from '../../core/services/location';
+import { JourneyEstimate } from '../../core/models/journey-estimate.model'
 
 interface VehicleOption {
   type: VehicleType;
@@ -31,15 +33,68 @@ interface VehicleOption {
   templateUrl: './booking.html',
   styleUrl: './booking.css',
 })
-export class Booking {
+export class Booking implements OnInit {
   private readonly bookingService = inject(BookingService);
   private readonly pricingService = inject(PricingService);
   private readonly locationService = inject(LocationService);
   private readonly router = inject(Router);
 
+  private loadJourneyEstimate(): void {
+    const currentBooking = this.booking();
+
+    if (
+      !currentBooking?.pickupLocation ||
+      !currentBooking.destination
+    ) {
+      this.estimateError.set(
+        'Pickup location or destination is missing.',
+      );
+
+      return;
+    }
+
+    this.estimateLoading.set(true);
+    this.estimateError.set(null);
+
+    this.locationService
+      .getJourneyEstimate(
+        currentBooking.pickupLocation,
+        currentBooking.destination,
+      )
+      .subscribe({
+        next: estimate => {
+          this.journeyEstimate.set(estimate);
+          this.estimateLoading.set(false);
+        },
+
+        error: error => {
+          console.error(
+            'Journey estimate failed:',
+            error,
+          );
+
+          this.estimateError.set(
+            'We could not calculate the journey.',
+          );
+
+          this.estimateLoading.set(false);
+        },
+      });
+  }
+
+  ngOnInit(): void { this.loadJourneyEstimate(); }
+
   readonly booking = this.bookingService.booking;
 
   readonly distanceKm = signal(12);
+
+  readonly journeyEstimate =
+    signal<JourneyEstimate | null>(null);
+
+  readonly estimateLoading = signal(false);
+
+  readonly estimateError =
+    signal<string | null>(null);
 
   readonly vehicles: VehicleOption[] = [
     {
@@ -143,25 +198,11 @@ export class Booking {
     });
 
     this.router.navigate(['/passenger']);
+
   }
 
   changeBooking(): void {
     this.router.navigate(['/']);
   }
 
-  readonly journeyEstimate = computed(() => {
-    const currentBooking = this.booking();
-
-    if (
-      !currentBooking?.pickupLocation ||
-      !currentBooking.destination
-    ) {
-      return null;
-    }
-
-    return this.locationService.getJourneyEstimate(
-      currentBooking.pickupLocation,
-      currentBooking.destination,
-    );
-  });
 }
