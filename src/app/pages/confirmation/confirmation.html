@@ -1,0 +1,238 @@
+<section class="confirmation-page">
+  <div class="confirmation-container">
+    @if (
+      bookingIsConfirmed() &&
+      booking();
+      as currentBooking
+    ) {
+      <div class="success-card">
+        <div class="success-icon">
+          ✓
+        </div>
+
+        <p class="eyebrow">
+          Booking confirmed
+        </p>
+
+        <h1>
+          Thank you, {{ passengerName() }}!
+        </h1>
+
+        <p class="success-message">
+          Your taxi booking has been confirmed.
+          Please keep your booking reference available.
+        </p>
+
+        <div class="reference-card">
+          <span>Booking reference</span>
+
+          <strong>
+            {{ currentBooking.bookingReference }}
+          </strong>
+
+          @if (currentBooking.confirmedAt) {
+            <small>
+              Confirmed on
+              {{
+                currentBooking.confirmedAt
+                  | date: 'd MMMM y, HH:mm'
+              }}
+            </small>
+          }
+        </div>
+
+        <div class="booking-details">
+          <section class="detail-card">
+            <div class="detail-heading">
+              <span>01</span>
+
+              <div>
+                <h2>Journey</h2>
+                <p>Your confirmed route</p>
+              </div>
+            </div>
+
+            <div class="route">
+              <div class="route-point">
+                <span class="route-marker pickup"></span>
+
+                <div>
+                  <small>Pickup</small>
+
+                  <strong>
+                    {{
+                      currentBooking.pickupLocation
+                    }}
+                  </strong>
+                </div>
+              </div>
+
+              <div class="route-line"></div>
+
+              <div class="route-point">
+                <span
+                  class="route-marker destination"
+                ></span>
+
+                <div>
+                  <small>Destination</small>
+
+                  <strong>
+                    {{ currentBooking.destination }}
+                  </strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="information-grid">
+              <div>
+                <span>Pickup date</span>
+
+                <strong>
+                  {{
+                    currentBooking.pickupDate
+                      | date: 'EEEE, d MMMM y'
+                  }}
+                </strong>
+              </div>
+
+              <div>
+                <span>Pickup time</span>
+
+                <strong>
+                  {{ currentBooking.pickupTime }}
+                </strong>
+              </div>
+
+              <div>
+                <span>Distance</span>
+
+                <strong>
+                  {{ currentBooking.distanceKm }} km
+                </strong>
+              </div>
+
+              <div>
+                <span>Vehicle</span>
+
+                <strong>
+                  {{ vehicleName() }}
+                </strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="detail-card">
+            <div class="detail-heading">
+              <span>02</span>
+
+              <div>
+                <h2>Passenger</h2>
+                <p>Contact information</p>
+              </div>
+            </div>
+
+            @if (
+              currentBooking.passengerDetails;
+              as passenger
+            ) {
+              <div class="information-grid">
+                <div>
+                  <span>Name</span>
+
+                  <strong>
+                    {{ passengerName() }}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>Phone</span>
+
+                  <strong>
+                    {{ passenger.phone }}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>Email</span>
+
+                  <strong>
+                    {{
+                      passenger.email ||
+                        'Not provided'
+                    }}
+                  </strong>
+                </div>
+
+                <div>
+                  <span>Passengers</span>
+
+                  <strong>
+                    {{ passenger.passengerCount }}
+                  </strong>
+                </div>
+              </div>
+            }
+          </section>
+        </div>
+
+        <div class="price-card">
+          <div>
+            <span>Estimated total</span>
+
+            <small>
+              The final fare may change if the route
+              changes.
+            </small>
+          </div>
+
+          <strong>
+            {{
+              currentBooking.estimatedPrice
+                | currency: 'EUR'
+            }}
+          </strong>
+        </div>
+
+        <div class="notice">
+          <span>✓</span>
+
+          <p>
+            Your booking is stored for this browser
+            session. Later, we will send it to a real
+            backend database.
+          </p>
+        </div>
+
+        <button
+          class="primary-button"
+          type="button"
+          (click)="bookAnotherTaxi()"
+        >
+          Book another taxi
+        </button>
+      </div>
+    } @else {
+      <div class="missing-booking">
+        <div class="missing-icon">
+          !
+        </div>
+
+        <h1>No confirmed booking found</h1>
+
+        <p>
+          Your booking may have expired, been cleared,
+          or not yet been confirmed.
+        </p>
+
+        <button
+          class="primary-button"
+          type="button"
+          (click)="bookAnotherTaxi()"
+        >
+          Start a new booking
+        </button>
+      </div>
+    }
+  </div>
+</section>

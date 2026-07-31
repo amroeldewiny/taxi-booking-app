@@ -1,0 +1,201 @@
+<section class="booking-page">
+  <div class="booking-container">
+    @if (booking(); as currentBooking) {
+      <div class="page-heading">
+        <p class="eyebrow">Step 2 of 4</p>
+
+        <h1>Select your vehicle</h1>
+
+        <p>
+          Choose the vehicle that best suits your journey.
+        </p>
+      </div>
+
+      <div class="journey-summary">
+        <div>
+          <span>Pickup</span>
+          <strong>
+            {{ currentBooking.pickupLocation }}
+          </strong>
+        </div>
+
+        <span class="journey-arrow">→</span>
+
+        <div>
+          <span>Destination</span>
+          <strong>
+            {{ currentBooking.destination }}
+          </strong>
+        </div>
+
+        <div>
+          <span>Date and time</span>
+          <strong>
+            {{ currentBooking.pickupDate }}
+            at
+            {{ currentBooking.pickupTime }}
+          </strong>
+        </div>
+      </div>
+
+      <div class="vehicle-grid">
+        @for (vehicle of vehicles; track vehicle.type) {
+          <button
+            class="vehicle-card"
+            type="button"
+            [class.selected]="
+              selectedVehicle()?.type === vehicle.type
+            "
+            (click)="selectVehicle(vehicle)"
+          >
+            <span class="vehicle-icon">
+              {{ vehicle.icon }}
+            </span>
+
+            <div class="vehicle-information">
+              <div class="vehicle-title">
+                <h2>{{ vehicle.name }}</h2>
+
+                <strong>
+                  @if (vehicle.surcharge === 0) {
+                    Included
+                  } @else {
+                    +{{
+                      vehicle.surcharge
+                        | currency: 'EUR'
+                    }}
+                  }
+                </strong>
+              </div>
+
+              <p>{{ vehicle.description }}</p>
+
+              <div class="vehicle-capacity">
+                <span>
+                  👤 Up to {{ vehicle.passengers }}
+                </span>
+
+                <span>
+                  🧳 {{ vehicle.luggage }} bags
+                </span>
+              </div>
+            </div>
+
+            <span class="selection-indicator">
+              @if (
+                selectedVehicle()?.type === vehicle.type
+              ) {
+                ✓
+              }
+            </span>
+          </button>
+        }
+      </div>
+
+      @if (journeyEstimate(); as estimate) {
+        <section class="journey-estimate">
+          <div>
+            <span>Estimated distance</span>
+
+            <strong>
+              {{ estimate.distanceKm }} km
+            </strong>
+          </div>
+
+          <div>
+            <span>Estimated duration</span>
+
+            <strong>
+              {{ estimate.durationMinutes }} minutes
+            </strong>
+          </div>
+        </section>
+      }
+
+      @if (priceCalculation(); as price) {
+        <div class="price-breakdown">
+          <h3>Price estimate</h3>
+
+          <div>
+            <span>Estimated distance</span>
+            <strong>{{ price.distanceKm }} km</strong>
+          </div>
+
+          <div>
+            <span>Base fare</span>
+            <strong>
+              {{ price.baseFare | currency: 'EUR' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Distance fare</span>
+            <strong>
+              {{ price.distanceFare | currency: 'EUR' }}
+            </strong>
+          </div>
+
+          <div>
+            <span>Vehicle surcharge</span>
+            <strong>
+              {{
+                price.vehicleSurcharge
+                  | currency: 'EUR'
+              }}
+            </strong>
+          </div>
+
+          <div class="price-total">
+            <span>Estimated total</span>
+            <strong>
+              {{ price.totalPrice | currency: 'EUR' }}
+            </strong>
+          </div>
+        </div>
+      }
+
+      <div class="booking-actions">
+        <button
+          class="back-button"
+          type="button"
+          (click)="changeBooking()"
+        >
+          Back
+        </button>
+
+        <div class="price-area">
+          <span>Estimated total</span>
+
+          <strong>
+            {{ totalPrice() | currency: 'EUR' }}
+          </strong>
+        </div>
+
+        <button
+          class="confirm-button"
+          type="button"
+          [disabled]="!selectedVehicle()"
+          (click)="continueToPassenger()"
+        >
+          Continue
+        </button>
+      </div>
+    } @else {
+      <div class="confirmation-card">
+        <h1>No booking found</h1>
+
+        <p>
+          Return to the home page and enter your journey.
+        </p>
+
+        <button
+          class="confirm-button"
+          type="button"
+          (click)="changeBooking()"
+        >
+          Start booking
+        </button>
+      </div>
+    }
+  </div>
+</section>

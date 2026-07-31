@@ -1,0 +1,214 @@
+<header class="navbar">
+  <a class="logo" href="#">
+    <span class="logo-icon">T</span>
+    <span>TaxiGo</span>
+  </a>
+
+  <nav class="navigation" aria-label="Main navigation">
+    <a href="#home">Home</a>
+    <a href="#services">Services</a>
+    <a href="#about">About</a>
+    <a href="#contact">Contact</a>
+  </nav>
+
+  <a class="header-button" href="#booking">Book a taxi</a>
+</header>
+
+<main>
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <p class="eyebrow">Fast · Safe · Reliable</p>
+
+      <h1>Your reliable taxi, whenever you need it.</h1>
+
+      <p class="hero-description">
+        Book a comfortable taxi in just a few seconds. We provide safe,
+        professional and reliable transportation, day and night.
+      </p>
+
+      <div class="hero-actions">
+        <a class="primary-button" href="#booking">Book your ride</a>
+        <a class="secondary-button" href="tel:+3212345678">
+          Call +32 12 34 56 78
+        </a>
+      </div>
+
+      <div class="benefits">
+        <span>✓ Available 24/7</span>
+        <span>✓ Professional drivers</span>
+        <span>✓ Clear pricing</span>
+      </div>
+    </div>
+
+    <div class="booking-card" id="booking">
+      <div class="booking-heading">
+        <p>Book online</p>
+        <h2>Where are you going?</h2>
+      </div>
+
+      <form [formGroup]="bookingForm" (ngSubmit)="bookTaxi()">
+        <div class="form-group">
+          <label for="pickup">Pickup location</label>
+
+          <input
+            id="pickup"
+            type="text"
+            formControlName="pickupLocation"
+            placeholder="Enter pickup address"
+          />
+
+          @if (
+            bookingForm.controls.pickupLocation.touched &&
+            bookingForm.controls.pickupLocation.invalid
+          ) {
+            <small class="error-message">
+              Pickup location is required.
+            </small>
+          }
+        </div>
+
+        <div class="form-group">
+          <label for="destination">Destination</label>
+
+          <input
+            id="destination"
+            type="text"
+            formControlName="destination"
+            placeholder="Enter destination"
+          />
+
+          @if (
+            bookingForm.controls.destination.touched &&
+            bookingForm.controls.destination.invalid
+          ) {
+            <small class="error-message">
+              Destination is required.
+            </small>
+          }
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="pickupDate">Date</label>
+
+            <input
+              id="pickupDate"
+              type="date"
+              formControlName="pickupDate"
+            />
+
+            @if (
+              bookingForm.controls.pickupDate.touched &&
+              bookingForm.controls.pickupDate.invalid
+            ) {
+              <small class="error-message">Date is required.</small>
+            }
+          </div>
+
+          <div class="form-group">
+            <label for="pickupTime">Time</label>
+
+            <input
+              id="pickupTime"
+              type="time"
+              formControlName="pickupTime"
+            />
+
+            @if (
+              bookingForm.controls.pickupTime.touched &&
+              bookingForm.controls.pickupTime.invalid
+            ) {
+              <small class="error-message">Time is required.</small>
+            }
+          </div>
+        </div>
+
+        <button class="booking-button" type="submit">
+          Continue booking
+        </button>
+      </form>
+
+      <p class="booking-note">
+        No payment is required during this demonstration.
+      </p>
+    </div>
+  </section>
+
+  <section class="services-section" id="services">
+    <div class="section-heading">
+      <p class="eyebrow">Our services</p>
+      <h2>A ride for every situation</h2>
+      <p>
+        From everyday local journeys to airport transfers, we make your trip
+        comfortable and stress-free.
+      </p>
+    </div>
+
+    <div class="services-grid">
+      <article class="service-card">
+        <span class="service-icon">🚕</span>
+        <h3>Local taxi</h3>
+        <p>
+          Fast and dependable transportation for shopping, appointments and
+          everyday journeys.
+        </p>
+      </article>
+
+      <article class="service-card">
+        <span class="service-icon">✈️</span>
+        <h3>Airport transfer</h3>
+        <p>
+          Arrive at the airport comfortably and on time with scheduled pickup
+          service.
+        </p>
+      </article>
+
+      <article class="service-card">
+        <span class="service-icon">💼</span>
+        <h3>Business travel</h3>
+        <p>
+          Professional transportation for meetings, employees and corporate
+          guests.
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="about-section" id="about">
+    <div>
+      <p class="eyebrow">Why TaxiGo?</p>
+      <h2>Professional service from pickup to destination.</h2>
+    </div>
+
+    <div class="statistics">
+      <div>
+        <strong>24/7</strong>
+        <span>Availability</span>
+      </div>
+
+      <div>
+        <strong>10+</strong>
+        <span>Professional drivers</span>
+      </div>
+
+      <div>
+        <strong>5K+</strong>
+        <span>Completed rides</span>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer" id="contact">
+  <div>
+    <strong>TaxiGo</strong>
+    <p>Safe and reliable taxi service.</p>
+  </div>
+
+  <div>
+    <p>Telephone: +32 12 34 56 78</p>
+    <p>Email: booking&#64;taxigo.be</p>
+  </div>
+
+  <p>© 2026 TaxiGo. All rights reserved.</p>
+</footer>

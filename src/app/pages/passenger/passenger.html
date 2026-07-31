@@ -1,0 +1,302 @@
+<section class="passenger-page">
+  <div class="passenger-container">
+    @if (booking(); as currentBooking) {
+      @if (currentBooking.vehicleType) {
+        <div class="page-heading">
+          <p class="eyebrow">Step 3 of 4</p>
+
+          <h1>Passenger details</h1>
+
+          <p>
+            Tell us who will be travelling.
+          </p>
+        </div>
+
+        <div class="booking-layout">
+          <form
+            class="passenger-form"
+            [formGroup]="passengerForm"
+            (ngSubmit)="continueToSummary()"
+          >
+            <div class="form-heading">
+              <h2>Contact information</h2>
+
+              <p>
+                We will use these details to contact you
+                about your taxi.
+              </p>
+            </div>
+
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="firstName">
+                  First name *
+                </label>
+
+                <input
+                  id="firstName"
+                  type="text"
+                  formControlName="firstName"
+                  autocomplete="given-name"
+                  placeholder="Enter your first name"
+                />
+
+                @if (
+                  passengerForm.controls.firstName.touched &&
+                  passengerForm.controls.firstName.invalid
+                ) {
+                  <small class="error-message">
+                    Please enter at least 2 characters.
+                  </small>
+                }
+              </div>
+
+              <div class="form-field">
+                <label for="lastName">
+                  Last name *
+                </label>
+
+                <input
+                  id="lastName"
+                  type="text"
+                  formControlName="lastName"
+                  autocomplete="family-name"
+                  placeholder="Enter your last name"
+                />
+
+                @if (
+                  passengerForm.controls.lastName.touched &&
+                  passengerForm.controls.lastName.invalid
+                ) {
+                  <small class="error-message">
+                    Please enter at least 2 characters.
+                  </small>
+                }
+              </div>
+
+              <div class="form-field">
+                <label for="phone">
+                  Phone number *
+                </label>
+
+                <input
+                  id="phone"
+                  type="tel"
+                  formControlName="phone"
+                  autocomplete="tel"
+                  placeholder="+32 470 00 00 00"
+                />
+
+                @if (
+                  passengerForm.controls.phone.touched &&
+                  passengerForm.controls.phone.invalid
+                ) {
+                  <small class="error-message">
+                    Enter a valid phone number.
+                  </small>
+                }
+              </div>
+
+              <div class="form-field">
+                <label for="email">
+                  Email address
+                </label>
+
+                <input
+                  id="email"
+                  type="email"
+                  formControlName="email"
+                  autocomplete="email"
+                  placeholder="name@example.com"
+                />
+
+                @if (
+                  passengerForm.controls.email.touched &&
+                  passengerForm.controls.email.invalid
+                ) {
+                  <small class="error-message">
+                    Enter a valid email address.
+                  </small>
+                }
+              </div>
+
+              <div class="form-field full-width">
+                <label for="passengerCount">
+                  Number of passengers *
+                </label>
+
+                <select
+                id="passengerCount"
+                formControlName="passengerCount"
+                >
+                @for (
+                    number of passengerOptions();
+                    track number
+                ) {
+                    <option [value]="number">
+                    {{ number }}
+                    @if (number === 1) {
+                        passenger
+                    } @else {
+                        passengers
+                    }
+                    </option>
+                }
+                </select>
+
+                <small class="field-help">
+                  Maximum {{ maximumPassengers() }}
+                  passengers for {{ vehicleName() }}.
+                </small>
+              </div>
+
+              <div class="form-field full-width">
+                <label for="specialInstructions">
+                  Special instructions
+                </label>
+
+                <textarea
+                  id="specialInstructions"
+                  formControlName="specialInstructions"
+                  rows="5"
+                  maxlength="300"
+                  placeholder="Flight number, child seat, accessibility requirements or driver instructions..."
+                ></textarea>
+
+                <div class="character-count">
+                  {{
+                    passengerForm.controls
+                      .specialInstructions.value.length
+                  }}/300
+                </div>
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button
+                class="back-button"
+                type="button"
+                (click)="goBack()"
+              >
+                Back
+              </button>
+
+              <button
+                class="continue-button"
+                type="submit"
+              >
+                Review booking
+              </button>
+            </div>
+          </form>
+
+          <aside class="booking-summary">
+            <p class="summary-label">
+              Your journey
+            </p>
+
+            <div class="route">
+              <div class="route-point">
+                <span class="route-icon pickup"></span>
+
+                <div>
+                  <small>Pickup</small>
+
+                  <strong>
+                    {{ currentBooking.pickupLocation }}
+                  </strong>
+                </div>
+              </div>
+
+              <div class="route-line"></div>
+
+              <div class="route-point">
+                <span class="route-icon destination"></span>
+
+                <div>
+                  <small>Destination</small>
+
+                  <strong>
+                    {{ currentBooking.destination }}
+                  </strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="summary-details">
+              <div>
+                <span>Date</span>
+                <strong>
+                  {{ currentBooking.pickupDate }}
+                </strong>
+              </div>
+
+              <div>
+                <span>Time</span>
+                <strong>
+                  {{ currentBooking.pickupTime }}
+                </strong>
+              </div>
+
+              <div>
+                <span>Vehicle</span>
+                <strong>{{ vehicleName() }}</strong>
+              </div>
+
+              <div>
+                <span>Distance</span>
+                <strong>
+                  {{ currentBooking.distanceKm }} km
+                </strong>
+              </div>
+            </div>
+
+            <div class="summary-total">
+              <span>Estimated total</span>
+
+              <strong>
+                {{
+                  currentBooking.estimatedPrice
+                    | currency: 'EUR'
+                }}
+              </strong>
+            </div>
+          </aside>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <h1>No vehicle selected</h1>
+
+          <p>
+            Select a vehicle before entering passenger
+            details.
+          </p>
+
+          <button
+            class="continue-button"
+            type="button"
+            (click)="goBack()"
+          >
+            Select a vehicle
+          </button>
+        </div>
+      }
+    } @else {
+      <div class="empty-state">
+        <h1>No booking found</h1>
+
+        <p>
+          Start a new journey from the home page.
+        </p>
+
+        <button
+          class="continue-button"
+          type="button"
+          (click)="goBack()"
+        >
+          Return
+        </button>
+      </div>
+    }
+  </div>
+</section>

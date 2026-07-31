@@ -1,0 +1,362 @@
+<section class="summary-page">
+  <div class="summary-container">
+    @if (
+      bookingIsComplete() &&
+      booking();
+      as currentBooking
+    ) {
+      <header class="page-heading">
+        <p class="eyebrow">Step 4 of 4</p>
+
+        <h1>Review your booking</h1>
+
+        <p>
+          Check your journey and passenger information
+          before confirming.
+        </p>
+      </header>
+
+      <div class="summary-layout">
+        <main class="summary-content">
+          <section class="summary-card">
+            <div class="card-heading">
+              <div>
+                <p class="card-number">01</p>
+
+                <div>
+                  <h2>Journey</h2>
+                  <p>Your pickup and destination</p>
+                </div>
+              </div>
+
+              <button
+                class="edit-button"
+                type="button"
+                (click)="startNewBooking()"
+              >
+                Change
+              </button>
+            </div>
+
+            <div class="route">
+              <div class="route-point">
+                <span
+                  class="route-icon pickup"
+                ></span>
+
+                <div>
+                  <small>Pickup</small>
+
+                  <strong>
+                    {{
+                      currentBooking.pickupLocation
+                    }}
+                  </strong>
+                </div>
+              </div>
+
+              <div class="route-line"></div>
+
+              <div class="route-point">
+                <span
+                  class="route-icon destination"
+                ></span>
+
+                <div>
+                  <small>Destination</small>
+
+                  <strong>
+                    {{ currentBooking.destination }}
+                  </strong>
+                </div>
+              </div>
+            </div>
+
+            <div class="information-grid">
+              <div class="information-item">
+                <span>Date</span>
+
+                <strong>
+                  {{
+                    currentBooking.pickupDate
+                      | date: 'EEEE, d MMMM y'
+                  }}
+                </strong>
+              </div>
+
+              <div class="information-item">
+                <span>Pickup time</span>
+
+                <strong>
+                  {{ currentBooking.pickupTime }}
+                </strong>
+              </div>
+
+              <div class="information-item">
+                <span>Distance</span>
+
+                <strong>
+                  {{ currentBooking.distanceKm }} km
+                </strong>
+              </div>
+
+              <div class="information-item">
+                <span>Estimated duration</span>
+
+                <strong>
+                  @if (
+                    currentBooking
+                      .estimatedDurationMinutes
+                  ) {
+                    {{
+                      currentBooking
+                        .estimatedDurationMinutes
+                    }}
+                    minutes
+                  } @else {
+                    To be calculated
+                  }
+                </strong>
+              </div>
+            </div>
+          </section>
+
+          <section class="summary-card">
+            <div class="card-heading">
+              <div>
+                <p class="card-number">02</p>
+
+                <div>
+                  <h2>Vehicle</h2>
+                  <p>Your selected taxi</p>
+                </div>
+              </div>
+
+              <button
+                class="edit-button"
+                type="button"
+                (click)="goBackToVehicle()"
+              >
+                Change
+              </button>
+            </div>
+
+            <div class="vehicle-summary">
+              <div class="vehicle-icon">
+                @switch (
+                  currentBooking.vehicleType
+                ) {
+                  @case ('standard') {
+                    🚕
+                  }
+
+                  @case ('business') {
+                    🚘
+                  }
+
+                  @case ('minivan') {
+                    🚐
+                  }
+                }
+              </div>
+
+              <div>
+                <h3>{{ vehicleName() }}</h3>
+
+                <p>
+                  Suitable for your selected number of
+                  passengers and luggage.
+                </p>
+              </div>
+            </div>
+          </section>
+
+          <section class="summary-card">
+            <div class="card-heading">
+              <div>
+                <p class="card-number">03</p>
+
+                <div>
+                  <h2>Passenger</h2>
+                  <p>Contact and travel information</p>
+                </div>
+              </div>
+
+              <button
+                class="edit-button"
+                type="button"
+                (click)="goBack()"
+              >
+                Edit
+              </button>
+            </div>
+
+            @if (
+              currentBooking.passengerDetails;
+              as passenger
+            ) {
+              <div class="information-grid">
+                <div class="information-item">
+                  <span>Passenger name</span>
+
+                  <strong>
+                    {{ passengerFullName() }}
+                  </strong>
+                </div>
+
+                <div class="information-item">
+                  <span>Phone number</span>
+
+                  <strong>{{ passenger.phone }}</strong>
+                </div>
+
+                <div class="information-item">
+                  <span>Email address</span>
+
+                  <strong>
+                    {{
+                      passenger.email ||
+                        'Not provided'
+                    }}
+                  </strong>
+                </div>
+
+                <div class="information-item">
+                  <span>Passengers</span>
+
+                  <strong>
+                    {{ passenger.passengerCount }}
+
+                    @if (
+                      passenger.passengerCount === 1
+                    ) {
+                      passenger
+                    } @else {
+                      passengers
+                    }
+                  </strong>
+                </div>
+              </div>
+
+              <div class="instructions">
+                <span>Special instructions</span>
+
+                <p>
+                  {{
+                    passenger.specialInstructions ||
+                      'No special instructions provided.'
+                  }}
+                </p>
+              </div>
+            }
+          </section>
+        </main>
+
+        <aside class="price-card">
+          <p class="price-label">
+            Price summary
+          </p>
+
+          <h2>Estimated fare</h2>
+
+          <div class="price-lines">
+            <div>
+              <span>Base fare</span>
+
+              <strong>
+                {{
+                  currentBooking.baseFare
+                    | currency: 'EUR'
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Distance fare</span>
+
+              <strong>
+                {{
+                  currentBooking.distanceFare
+                    | currency: 'EUR'
+                }}
+              </strong>
+            </div>
+
+            <div>
+              <span>Vehicle surcharge</span>
+
+              <strong>
+                {{
+                  currentBooking.vehicleSurcharge
+                    | currency: 'EUR'
+                }}
+              </strong>
+            </div>
+          </div>
+
+          <div class="price-total">
+            <div>
+              <span>Estimated total</span>
+
+              <small>
+                Final fare may change if the journey
+                changes.
+              </small>
+            </div>
+
+            <strong>
+              {{
+                currentBooking.estimatedPrice
+                  | currency: 'EUR'
+              }}
+            </strong>
+          </div>
+
+          <button
+            class="confirm-button"
+            type="button"
+            (click)="confirmBooking()"
+          >
+            Confirm booking
+          </button>
+
+          <button
+            class="back-button"
+            type="button"
+            (click)="goBack()"
+          >
+            Back to passenger details
+          </button>
+
+          <div class="secure-message">
+            <span>✓</span>
+
+            <p>
+              Your booking information is stored securely
+              during this session.
+            </p>
+          </div>
+        </aside>
+      </div>
+    } @else {
+      <div class="empty-state">
+        <div class="empty-icon">🚕</div>
+
+        <h1>Your booking is incomplete</h1>
+
+        <p>
+          Some required journey, vehicle or passenger
+          information is missing.
+        </p>
+
+        <button
+          class="confirm-button"
+          type="button"
+          (click)="changeJourney()"
+        >
+          Start a new booking
+        </button>
+      </div>
+    }
+  </div>
+</section>
