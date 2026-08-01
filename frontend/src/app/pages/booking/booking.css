@@ -345,6 +345,7 @@
 
 .journey-estimate {
   margin-bottom: 24px;
+  margin-top: 20px;
   padding: 20px;
   display: grid;
   grid-template-columns: repeat(2, 1fr);
